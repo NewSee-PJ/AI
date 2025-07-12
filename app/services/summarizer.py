@@ -1,5 +1,20 @@
 # 비즈니스 로직 / AI 추론 모듈
 
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+# 모델과 토크나이저를 전역으로 로드 (최초 1회만)
+tokenizer = AutoTokenizer.from_pretrained("nlpai-lab/KULLM3")
+model = AutoModelForCausalLM.from_pretrained("nlpai-lab/KULLM3")
+
+def generate_content(prompt: str) -> str:
+    inputs = tokenizer(prompt, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model.generate(**inputs, max_new_tokens=256)
+    result = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    # 프롬프트 부분 제거 (모델에 따라 필요)
+    return result[len(prompt):].strip() if result.startswith(prompt) else result
+
 def build_transform_prompt(title: str, content: str, level: str) -> str:
     base = f"다음 뉴스 제목과 본문을 사용자의 이해 수준에 맞게 다시 써줘.\n\n뉴스 제목: {title}\n뉴스 본문: {content}\n"
     if level == "상":
