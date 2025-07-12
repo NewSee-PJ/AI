@@ -1,0 +1,11 @@
+fastapi
+uvicorn==0.29.0 # FastAPI 실행용 ASGI 서버
+pydantic
+python-dotenv
+torch==2.7.1
+transformers==4.51.3 #hf 모델 로드하고 추론 핵심 라이브러리
+safetensors #HuggingFace 모델이 저장되는 .safetensors 파일 포맷을 빠르고 안전하게 로드하기 위한 라이브러리
+accelerate>=0.20.3 # HuggingFace 모델 가속 및 디바이스 관리
+huggingface-hub
+sentencepiece #모델 토크나이저
+bitsandbytes==0.42.0 # gpu용 4bit양자화
