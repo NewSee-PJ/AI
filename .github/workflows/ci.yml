@@ -1,0 +1,27 @@
+# .github/workflows/ci.yml
+name: Code Check (Colab용)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 코드
+        uses: actions/checkout@v3
+
+      - name: Python 3.11 설치
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 의존성 설치
+        run: |
+          pip install -r requirements.txt
+
+      - name: 문법 체크 (예: flake8 or pytest)
+        run: |
+          flake8 . || true
