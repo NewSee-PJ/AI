@@ -6,7 +6,7 @@ from typing import List
 
 router = APIRouter()
 
-@router.post("/transfer", response_model=NewsTransferResponse)
+@router.post("/news/transfer", response_model=NewsTransferResponse)
 async def transform_news(request: NewsTransferRequest):
     transform_prompt = build_transform_prompt(request.title, request.originalContent, request.level)
     summary_prompt = build_summary_prompt(request.title, request.originalContent)
@@ -34,3 +34,9 @@ async def transform_news(request: NewsTransferRequest):
         ),
         success=True
     )
+
+@router.post("/news/auto_generate")
+async def auto_generate_news(title: str = Body(...), content: str = Body(...), level: str = Body(...)):
+    mcp_request = build_mcp_request_auto(title, content, level)
+    result = await call_local_mcp(mcp_request)
+    return result
