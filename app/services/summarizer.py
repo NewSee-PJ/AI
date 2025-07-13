@@ -4,6 +4,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import time
 from typing import List
+import httpx
 
 # 모델 로딩 및 4bit 양자화 설정
 model_id = "sunnyanna/KULLM3-AWQ"
@@ -43,5 +44,24 @@ def kullm_batch_generate(prompts: List[str], max_new_tokens=512):
         decoded_results.append(result_text.split('[/INST]')[-1].strip())
     return decoded_results
 
-def generate_content(prompt: str, max_new_tokens=512) -> str:
-    return kullm_batch_generate([prompt], max_new_tokens=max_new_tokens)[0]
+VLLM_API_URL = "http://localhost:8000/v1/completions"
+
+async def vllm_generate_content(prompt: str, max_tokens: int = 512) -> str:
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "model": "sunnyanna/KULLM3-AWQ",
+        "prompt": prompt,
+        "max_tokens": max_tokens,
+        "temperature": 0.2,
+        "top_p": 0.2,
+        "stop": None
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.post(VLLM_API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+        result = response.json()
+        return result["choices"][0]["text"].strip()
+
+# 기존 generate_content 함수 대체
+async def generate_content(prompt: str, max_new_tokens=512) -> str:
+    return await vllm_generate_content(prompt, max_tokens=max_new_tokens)
