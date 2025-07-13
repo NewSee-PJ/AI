@@ -6,7 +6,7 @@ import time
 from typing import List
 
 # 모델 로딩 및 4bit 양자화 설정
-model_id = "nlpai-lab/KULLM3"
+model_id = "sunnyanna/KULLM3-AWQ"
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_use_double_quant=True,
