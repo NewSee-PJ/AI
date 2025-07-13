@@ -9,3 +9,9 @@ accelerate>=0.20.3 # HuggingFace 모델 가속 및 디바이스 관리
 huggingface-hub
 sentencepiece #모델 토크나이저
 bitsandbytes==0.42.0 # gpu용 4bit양자화
+
+# RAG 도입
+langchain
+sentence-transformers
+quadrant
+httpx
